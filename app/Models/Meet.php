@@ -30,4 +30,14 @@ class Meet extends Model
 {
     use HasFactory;
     protected $guarded = [];
+
+    public function getEmployeeIdBrowseAttribute()
+    {
+        return $this->employee->user->name ?? 'Empty';
+    }
+
+    public function employee()
+    {
+        return $this->belongsTo(Employee::class);
+    }
 }
