@@ -8,12 +8,14 @@
         "php": "^8.0.2",
         "bensampo/laravel-enum": "^5.3",
         "guzzlehttp/guzzle": "^7.2",
+        "josezenem/laravel-make-migration-pivot": "^1.0",
         "laravel/framework": "^9.2",
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
         "tcg/voyager": "^1.5"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.6",
         "barryvdh/laravel-ide-helper": "^2.12",
         "fakerphp/faker": "^1.9.1",
         "laracasts/generators": "^2.0",

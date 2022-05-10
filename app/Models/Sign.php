@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+/**
+ * App\Models\Sign
+ *
+ * @property int $id
+ * @property int $appointment_id
+ * @property int|null $nurse_id
+ * @property float|null $systolic_blood_pressure
+ * @property float|null $diastolic_blood_pressure
+ * @property float|null $heartbeat
+ * @property float|null $temperature
+ * @property float|null $weight
+ * @property float|null $length
+ * @property float|null $waistline
+ * @property float|null $breathing
+ * @property float|null $oxygen
+ * @property float|null $peak_expiratory_flow
+ * @property float|null $sugar
+ * @property mixed|null $female_status
+ * @property mixed|null $skins
+ * @property mixed|null $ecg
+ * @property mixed|null $docs
+ * @property string|null $comment
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Database\Factories\SignFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereAppointmentId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereBreathing($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereComment($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereDiastolicBloodPressure($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereDocs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereEcg($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereFemaleStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereHeartbeat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereLength($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereNurseId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereOxygen($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign wherePeakExpiratoryFlow($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereSkins($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereSugar($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereSystolicBloodPressure($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereTemperature($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereWaistline($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Sign whereWeight($value)
+ * @mixin \Eloquent
+ */
+class Sign extends Model
+{
+    use HasFactory;
+    protected $guarded = [];
+}
