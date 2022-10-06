@@ -2,8 +2,12 @@
 
 namespace App\Models;
 
+use App\Enums\AppointmentStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\Appointment
@@ -42,6 +46,10 @@ class Appointment extends Model
 {
     use HasFactory;
     protected $guarded = [];
+    protected $casts = [
+        'status' => AppointmentStatus::class,
+        'docs' => 'array'
+    ];
     /**
      * Get the patient that owns the Appointment
      *
@@ -65,7 +73,7 @@ class Appointment extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function reception()
+    public function reception(): BelongsTo
     {
         return $this->belongsTo(User::class, 'reception_id');
     }
@@ -74,7 +82,7 @@ class Appointment extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function station()
+    public function station(): BelongsTo
     {
         return $this->belongsTo(Station::class);
     }
@@ -83,7 +91,7 @@ class Appointment extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function clinic()
+    public function clinic(): BelongsTo
     {
         return $this->belongsTo(Clinic::class);
     }
@@ -92,7 +100,7 @@ class Appointment extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function sign()
+    public function sign(): HasOne
     {
         return $this->hasOne(Sign::class);
     }
@@ -101,18 +109,17 @@ class Appointment extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function interview()
+    public function interview(): HasOne
     {
         return $this->hasOne(Interview::class);
     }
-    /**
-     * Get the nurse that owns the Appointment
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function nurse()
-    {
-        return $this->belongsTo(User::class, 'nurse_id');
-    }
 
+    public function getLoginTimeAttribute($value): ?string
+    {
+        return Carbon::parse($value)->format("g:i");
+    }
+    public function setLoginTimeAttribute($value)
+    {
+        $this->attributes['login_time'] =  Carbon::parse($value);
+    }
 }

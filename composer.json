@@ -10,9 +10,17 @@
         "guzzlehttp/guzzle": "^7.2",
         "josezenem/laravel-make-migration-pivot": "^1.0",
         "laravel/framework": "^9.2",
+        "laravel/jetstream": "^2.7",
         "laravel/sanctum": "^2.14.1",
         "laravel/tinker": "^2.7",
-        "tcg/voyager": "^1.5"
+        "livewire/livewire": "^2.5",
+        "mpdf/mpdf": "v8.0.17",
+        "niklasravnsborg/laravel-pdf": "^4.1",
+        "psr/log": "v2.*",
+        "pusher/pusher-php-server": "^7.0",
+        "staudenmeir/eloquent-has-many-deep": "^1.7",
+        "tcg/voyager": "^1.5",
+        "wireui/wireui": "^1.5"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.6",

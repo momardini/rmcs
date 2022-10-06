@@ -2,14 +2,19 @@
 
 namespace App\Models;
 
+use App\Enums\AppointmentStatus;
 use App\Enums\BloodType;
 use App\Enums\City;
-use App\Enums\DiseaseType;
 use App\Enums\GenderType;
 use App\Enums\MaritalType;
 use App\Enums\PatientStatus;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * App\Models\Patient
@@ -68,21 +73,73 @@ use Illuminate\Database\Eloquent\Model;
  */
 class Patient extends Model
 {
-    use HasFactory;
+    use HasFactory,\Staudenmeir\EloquentHasManyDeep\HasRelationships;
     protected $guarded = [];
     protected $casts = [
-        'status' => PatientStatus::class, 
+        'status' => PatientStatus::class,
         'city'=>City::class,
         'gender' => GenderType::class,
         'marital' => MaritalType::class,
         'blood_group' => BloodType::class,
+        'created_at' => 'date',
+        'previous_diseases'=> 'array',
+        'family_diseases' => 'array',
+        'birth' => 'date',
     ];
+    public function getStatusColorAttribute(): string
+    {
+        return [
+                PatientStatus::READY => 'green',
+                PatientStatus::IN_APPOINTMENT => 'red',
+                PatientStatus::BLOCKED => 'cool-gray',
+            ][$this->status->value] ?? 'cool-gray';
+    }
+    public function getGenderSymbolAttribute(): string
+    {
+        return [
+                GenderType::MALE => 'male',
+                GenderType::FEMALE => 'female',
+            ][$this->gender->value] ?? 'male';
+    }
+
+    /**
+     * @return string
+     */
+    public function getAgeAttribute() : string
+    {
+        if($this->birth){
+            $current = Carbon::now();
+            $birth = Carbon::parse($this->birth);
+            if(!$birth->diffInYears($current)){
+                return $birth->diff($current)->format('%m M');
+            }
+            else{
+                return $birth->diff($current)->format('%yY - %mM');
+            }
+        }
+        return '-';
+
+
+    }
+
+    public function getMaritalSymbolAttribute() : string
+    {
+        return [
+                MaritalType::SINGLE => 'single',
+                MaritalType::MARRIED => 'married',
+            ][$this->marital->value] ?? 'single';
+    }
+
+    public function getHideNameAttribute()
+    {
+        return \Str::of($this->full_name)->explode(' ')->map(function ($str) {return \Str::mask($str, '*', 3);})->implode(' ');
+    }
     /**
      * Get the station that owns the Patient
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function station()
+    public function station(): BelongsTo
     {
         return $this->belongsTo(Station::class);
     }
@@ -91,18 +148,79 @@ class Patient extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function appointments()
+    public function appointments(): HasMany
     {
         return $this->hasMany(Appointment::class);
     }
+    /**
+     * Get active appointment
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function active_appointment(): HasOne
+    {
+        return $this->hasOne(Appointment::class)
+            ->whereDate('created_at', Carbon::today())->orderByDesc('created_at');
+    }
+    /**
+     * Get active appointment that can be editable
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function editable_appointment(): HasOne
+    {
+        return $this->hasOne(Appointment::class)
+            ->whereDate('created_at', Carbon::today())
+            ->whereIn('status',[AppointmentStatus::coerce('NEW_APPOINTMENT'),AppointmentStatus::coerce('SIGN_DONE')])
+            ->orderBy('created_at','desc');
+    }
+    /**
+     * Get signs of Patient
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasMany
+     */
+    public function signs():hasMany
+    {
+        return $this->hasMany(Sign::class);
+    }
+
+    /**
+     * Get active signs of Patient
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\hasOne
+     */
+    public function active_sign():hasOne
+    {
+        return $this->hasOne(Sign::class)
+                    ->whereDate('created_at', Carbon::today());
+    }
+
     /**
      * Get all of the interviews for the Patient
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function interviews()
+    public function interviews(): HasManyThrough
     {
-        return $this->hasManyThrough(Interview::class, Appointment::class);
+        return $this->hasManyThrough(Interview::class, Appointment::class)->orderByDesc('created_at');
     }
-    
+    public function analytics(){
+        return $this->hasManyDeepFromRelations($this->interviews(),(new Interview())->analytics())
+            ->withPivot('analytic_interview', ['result']);
+    }
+//    /**
+//     * Get active Interview of Patient
+//     *
+//     * @return \Illuminate\Database\Eloquent\Relations\hasOne
+//     */
+//    public function active_interview()
+//    {
+//        return $this->active_appointment->interview;
+//    }
+    public function getDateForHumansAttribute(): string
+    {
+        return $this->created_at->format('M, d Y');
+    }
+
+
 }

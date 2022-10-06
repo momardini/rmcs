@@ -20,7 +20,7 @@ return new class extends Migration
             $table->longText('medicine_title');
             $table->integer('repeats')->default(\App\Enums\RepeatType::ONE_ONCE);
             $table->integer('pharmaceutical_form')->default(PharmaceuticalForm::PILLS);
-            $table->integer('count');
+            $table->integer('count')->default(1);
             $table->longText('note')->nullable();
             $table->integer('consume')->nullable();
             $table->timestamps();

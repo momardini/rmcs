@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use TCG\Voyager\Traits\Translatable;
 
 /**
  * App\Models\Station
@@ -33,7 +34,9 @@ use Illuminate\Database\Eloquent\Model;
 class Station extends Model
 {
     use HasFactory;
+    use Translatable;
     protected $guarded = [];
+    protected $translatable = ['title'];
     /**
      * Get all of the patients for the Station
      *

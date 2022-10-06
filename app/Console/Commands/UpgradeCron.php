@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Enums\ScheduleType;
 use App\Models\Analytic;
-use App\Models\AnalyticInterview;
 use App\Models\Appointment;
 use App\Models\Calendar;
 use App\Models\Clinic;
@@ -44,7 +43,22 @@ class UpgradeCron extends Command
      */
     public function handle(): int
     {
+
+        return 0;
         $perpage = 10000;
+        DB::connection('mysql2')->statement('UPDATE `appointments` set patient_id = 228 WHERE `patient_id` = 227');
+        DB::connection('mysql2')->statement('UPDATE `appointments` set patient_id = 2025 WHERE `patient_id` = 2024');
+        DB::connection('mysql2')->statement('UPDATE `appointments` set patient_id = 2414 WHERE `patient_id` = 2413');
+        DB::connection('mysql2')->statement('UPDATE `appointments` set patient_id = 4599 WHERE `patient_id` = 4598');
+        DB::connection('mysql2')->statement('UPDATE `signs` set appointment_id = 12695 WHERE `appointment_id` = 12694');
+        DB::connection('mysql2')->statement('UPDATE `signs` set appointment_id = 16442 WHERE `appointment_id` = 16441');
+        $old_models = Sign::on('mysql2')->with('appointment')->get();
+        foreach ($old_models as $old_row) {
+            DB::table('signs')
+                ->where('id', $old_row->id)
+                ->update(['patient_id' => $old_row->appointment->patient_id]);
+        }
+
         // Role
         $role_count = Role::all()->count();
         if ($role_count < 11) {
@@ -130,7 +144,7 @@ class UpgradeCron extends Command
                     'city' => $old_row->city,
                     'address' => $old_row->address,
                     'gender' => $old_row->sex,
-                    'marital' => $old_row->marital,
+                    'marital' => ($old_row->children > 0)?2:$old_row->marital,
                     'children' => $old_row->children,
                     'phone' => $old_row->phone,
                     'blood_group' => $old_row->blood,
@@ -150,6 +164,7 @@ class UpgradeCron extends Command
             $step->increment('row_id');
 
         }
+        DB::connection('mysql2')->statement('UPDATE `patients` SET `marital`=IF(children >0 ,2,1)');
         $last = ($old_models->last())?$old_models->last()->id:50000;
         $step->update(['row_id'=> $last]);
         $step->save();
@@ -279,13 +294,13 @@ class UpgradeCron extends Command
         $step->update(['row_id'=> $last]);
         $step->save();
         // return 0;
+
         // Sign
         $step = Upgrade::where('model','Sign')->first();
-
         DB::connection('mysql2')->statement('UPDATE `signs` set appointment_id = 12695 WHERE `appointment_id` = 12694');
         DB::connection('mysql2')->statement('UPDATE `signs` set appointment_id = 16442 WHERE `appointment_id` = 16441');
         /** @var Collection */
-        $old_models = Sign::on('mysql2')->where('id', '>', $step->row_id)->paginate($perpage);
+        $old_models = Sign::on('mysql2')->with('appointment')->where('id', '>', $step->row_id)->paginate($perpage);
         foreach ($old_models as $old_row) {
             $new_record = new Sign(
                 [
@@ -310,7 +325,7 @@ class UpgradeCron extends Command
                     'comment' => $old_row->comment,
                     'created_at' => $old_row->created_at,
                     'updated_at' => $old_row->updated_at,
-
+                    'patient_id' => $old_row->appointment->patient_id,
                 ]
             );
             $new_record->save();
@@ -376,7 +391,7 @@ class UpgradeCron extends Command
         $step->save();
         // return 0;
         // Analytic_Interview
-        $step = Upgrade::where('model','AnalyticInterview')->first();
+        $step = Upgrade::where('model','Analytic')->first();
         /** @var Collection */
         $old_models = Interview::on('mysql2')->where('id', '>', $step->row_id)->with('analytics')->paginate($perpage);
         foreach ($old_models as $old_row) {

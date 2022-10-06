@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use TCG\Voyager\Traits\Translatable;
 
 /**
  * App\Models\Clinic
@@ -29,7 +30,9 @@ use Illuminate\Database\Eloquent\Model;
 class Clinic extends Model
 {
     use HasFactory;
+    use Translatable;
     protected $guarded = [];
+    protected $translatable = ['title'];
 //    protected $connection = 'mysql2';
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
 /**
@@ -15,7 +16,7 @@ use BenSampo\Enum\Enum;
  * @method static static ONE_SIX_TIME()
  * @method static static TWO_TWICE()
  */
-final class RepeatType extends Enum
+final class RepeatType extends Enum implements LocalizedEnum
 {
     const HALF_ONCE =   1;
     const HALF_TWICE =   2;

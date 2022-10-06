@@ -1,0 +1,38 @@
+<?php
+return [
+    'patient'          => [
+        'edit' => 'تعديل',
+        'make_appointment' => 'حجز موعد',
+        'takeSign' => 'اخذ العلامات الحيوية',
+        'edit-sign' => 'تعديل العلامات الحيوية',
+        'doInterview' => 'بدء المعاينة',
+        'signs_title' => 'العلامات الحيوية',
+        'oldInterviews' => 'مقابلات سابقة',
+        'analytic_result' => 'نتيجة التحليل المخبري',
+        'recipe' => 'وصفة',
+        'add_medicine' => 'أضف الدواء',
+        'analytics' => 'التحاليل الطبية',
+        'add_analytics' => 'أضف تحليل',
+
+        'editInterview' => 'تعديل المعاينة',
+        'show_analytic_results' => 'إظهار نتائج التحليل',
+        'recipes' => 'وصفات',
+        'show-details' => 'التفاصيل',
+        'information' => 'معلومات المريض',
+        'age' => 'العمر',
+        'add-analytic-results' => 'أضف نتيجة التحاليل',
+        'print-analytic-result' => 'طباعة نتائج التحاليل',
+        'analytic-result-added-successfully' => 'تمت إضافة نتائج التحاليل بنجاح',
+        'follow-interview' => 'متابعة المعاينة',
+        'docs-from-assistants' => 'المستندات المشتركة',
+        'docs-from-doctor' => 'المستندات المشتركة',
+        'print-analytics-request' => 'طباعة طلب التحاليل',
+        'documents-for-appointment' => 'وثائق المقابلة',
+        'print_recipe' => 'طباعة الوصفة الطبية',
+        'analysis-results' => 'نتائج التحاليل',
+        'interview-number' => 'رقم المقابلة',
+        'clinic' => 'العيادة',
+        'patient-number' => 'رقم',
+        'patient-name' => 'اسم',
+    ]
+    ];

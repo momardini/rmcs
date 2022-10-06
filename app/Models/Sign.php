@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\Sign
  *
  * @property int $id
  * @property int $appointment_id
+ * * @property int $patient_id
  * @property int|null $nurse_id
  * @property float|null $systolic_blood_pressure
  * @property float|null $diastolic_blood_pressure
@@ -24,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property float|null $sugar
  * @property mixed|null $female_status
  * @property mixed|null $skins
- * @property mixed|null $ecg
+ * @property mixed $ecg
  * @property mixed|null $docs
  * @property string|null $comment
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -59,5 +61,49 @@ use Illuminate\Database\Eloquent\Model;
 class Sign extends Model
 {
     use HasFactory;
+    public $additional_attributes = ['blood_pressure','bmi'];
     protected $guarded = [];
+    protected $casts = [
+        'female_status' => 'array',
+        'ecg' => 'array',
+        'skins' => 'array',
+        'docs' => 'array',
+    ];
+    public function getBmiAttribute()
+    {
+        if($this->length && $this->weight && ($this->length != 0)){
+             return round($this->weight/(($this->length / 100) * ($this->length / 100)),2) ;
+        }
+        return '-';
+    }
+    /**
+     * Get the appointment that owns the Sign
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function appointment(): BelongsTo
+    {
+        return $this->belongsTo(Appointment::class);
+    }
+    /**
+     * Get the patient that owns the Sign
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function patient(): BelongsTo
+    {
+        return $this->belongsTo(Patient::class);
+    }
+    public function getDiastolicBloodPressureAttribute($value)
+    {
+        return ($value)?$value:'--';
+    }
+    public function getSystolicBloodPressureAttribute($value)
+    {
+        return ($value)?$value:'--';
+    }
+    public function getBloodPressureAttribute()
+    {
+        return "{$this->systolic_blood_pressure} / {$this->diastolic_blood_pressure}";
+    }
 }

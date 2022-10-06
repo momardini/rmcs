@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * App\Models\Interview
@@ -48,5 +49,31 @@ class Interview extends Model
     public function analytics()
     {
         return $this->BelongsToMany(Analytic::class)->withPivot('result');
+    }
+    /**
+     * Get appointment of the Interview
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function appointment(): BelongsTo
+    {
+        return $this->belongsTo(Appointment::class);
+    }
+    /**
+     * Get the analytics that has value for the Interview
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function analytic_results(){
+        return $this->belongsToMany(Analytic::class)->wherePivot('result','!=','null')->withPivot('result');
+    }
+    /**
+     * Get all of the recipes for the Interview
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function recipes()
+    {
+        return $this->hasMany(Recipe::class);
     }
 }

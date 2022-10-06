@@ -30,7 +30,7 @@ class Analytic extends Model
 {
     use HasFactory;
     protected $guarded = [];
-    
+
     /**
      * The interviews that belong to the Analytic
      *
@@ -38,6 +38,6 @@ class Analytic extends Model
      */
     public function interviews()
     {
-        return $this->belongsToMany(Interview::class);
+        return $this->belongsToMany(Interview::class)->withPivot('result');
     }
 }

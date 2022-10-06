@@ -2,6 +2,16 @@
 
 namespace App\Models;
 
+use App\Actions\patients\AddAnalyticsResult;
+use App\Actions\patients\DoInterview;
+use App\Actions\patients\EditAppointment;
+use App\Actions\patients\EditInterview;
+use App\Actions\patients\EditPatient;
+use App\Actions\patients\EditSign;
+use App\Actions\patients\AddAnalytics;
+use App\Actions\patients\FollowInterview;
+use App\Actions\patients\MakeAppointment;
+use App\Actions\patients\TakeSign;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -71,6 +81,8 @@ class User extends \TCG\Voyager\Models\User
     protected $hidden = [
         'password',
         'remember_token',
+        'two_factor_recovery_codes',
+        'two_factor_secret',
     ];
 
     /**
@@ -81,6 +93,14 @@ class User extends \TCG\Voyager\Models\User
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function scopeTodayActiveDoctor($query)
+    {
+        $ids = Calendar::whereWorkingDay(today())->pluck('user_id')->toArray();
+
+        return ($ids)?$query->whereIn('id',$ids):$query->where('role_id', 2)->where('active',1);
+    }
+
     /**
      * Get the employee associated with the User
      *
@@ -90,6 +110,7 @@ class User extends \TCG\Voyager\Models\User
     {
         return $this->hasOne(Employee::class);
     }
+
     /**
      * Get all of the meetLogs for the User
      *
@@ -99,6 +120,7 @@ class User extends \TCG\Voyager\Models\User
     {
         return $this->hasMany(MeetLog::class);
     }
+
     /**
      * Get the station that owns the User
      *
@@ -107,5 +129,52 @@ class User extends \TCG\Voyager\Models\User
     public function station()
     {
         return $this->belongsTo(Station::class);
+    }
+    public function getActions($model){
+        $permissions = [];
+        foreach ($this->role->permissions->where('table_name',$model) as $permission){
+            switch ($permission->key){
+                case 'edit_patients':{
+                    $permissions['edit_patients'] = EditPatient::class;
+                    break;
+                }
+                case 'make_appointment_patients':{
+                    $permissions['make_appointment_patients'] = MakeAppointment::class;
+                    break;
+                }
+                case 'edit_appointment_patients':{
+                    $permissions['edit_appointment_patients'] = EditAppointment::class;
+                    break;
+                }
+                case 'take_sign_patients':{
+                    $permissions['take_sign_patients'] = TakeSign::class;
+                    break;
+                }
+                case 'edit_sign_patients':{
+                    $permissions['edit_sign_patients'] = EditSign::class;
+                    break;
+                }
+                case 'do_interview_patients':{
+                    $permissions['do_interview_patients'] = DoInterview::class;
+                    break;
+                }
+                case 'edit_interview_patients':{
+                    $permissions['edit_interview_patients'] = EditInterview::class;
+                    break;
+                }
+                case 'add_analytics_result_patients':{
+                    $permissions['add_analytics_result_patients'] = AddAnalyticsResult::class;
+                    break;
+                }
+                case 'follow_interview_patients':{
+                    $permissions['follow_interview_patients'] = FollowInterview::class;
+                    break;
+                }
+                default:{
+                    break;
+                }
+            }
+        }
+        return $permissions;
     }
 }

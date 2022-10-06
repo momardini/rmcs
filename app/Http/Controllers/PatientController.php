@@ -19,6 +19,33 @@ class PatientController extends \TCG\Voyager\Http\Controllers\Controller
 {
     use BreadRelationshipParser;
 
+    public function list(Request $request)
+    {
+        // GET THE SLUG, ex. 'posts', 'pages', etc.
+        $slug = 'patients';
+
+        // GET THE DataType based on the slug
+        $dataType = Voyager::model('DataType')->where('slug', '=', $slug)->first();
+        $model = app($dataType->model_name);
+
+        $dataTypeContent = $model::first();
+        // Check permission
+        $this->authorize('browse', app($dataType->model_name));
+        $actions = [];
+        if (!empty($dataTypeContent)) {
+            foreach (Voyager::actions() as $action) {
+                $action = new $action($dataType, $dataTypeContent);
+
+                if ($action->shouldActionDisplayOnDataType()) {
+                    $actions[] = $action;
+                }
+            }
+        }
+
+        return view('frontend.patients.index',compact(
+        'actions',
+        'dataType'));
+    }
     //***************************************
     //               ____
     //              |  _ \

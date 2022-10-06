@@ -24,6 +24,7 @@ return new class extends Migration
             $table->foreignId('clinic_id')->nullable()->constrained()->cascadeOnUpdate()->nullOnDelete();
             $table->timestamp('login_time')->nullable();
             $table->text('complaint')->nullable();
+            $table->json('docs')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

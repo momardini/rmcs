@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
 /**
@@ -32,7 +33,7 @@ use BenSampo\Enum\Enum;
  * @method static static EYE_DROPS()
  * @method static static EAR_DROP()
  */
-final class PharmaceuticalForm extends Enum
+final class PharmaceuticalForm extends Enum implements LocalizedEnum
 {
     const PILLS = 1;
     const INTRAMUSCULAR_INJECTION = 2;

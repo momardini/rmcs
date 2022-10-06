@@ -79,4 +79,13 @@ class Employee extends Model
     {
         return $this->hasMany(Calendar::class);
     }
+    /**
+     * The weeks that belong to the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function weekdays()
+    {
+        return $this->belongsToMany(WeekDay::class, 'employee_week_day');
+    }
 }
