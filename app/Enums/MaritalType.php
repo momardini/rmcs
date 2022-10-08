@@ -14,5 +14,5 @@ final class MaritalType extends Enum
     const SINGLE =   1;
     const MARRIED =   2;
     const DIVORCED = 3;
-//    const NOT_DEFINED = 4;
+    const NOT_DEFINED = 4;
 }

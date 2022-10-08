@@ -60,18 +60,18 @@ use Laravel\Sanctum\HasApiTokens;
 class User extends \TCG\Voyager\Models\User
 {
     use HasApiTokens, HasFactory, Notifiable;
-
     protected $guarded = [];
     /**
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
      */
-    protected $fillable = [
-        'name',
-        'email',
-        'password',
-    ];
+//    protected $fillable = [
+//        'id',
+//        'name',
+//        'email',
+//        'password',
+//    ];
 
     /**
      * The attributes that should be hidden for serialization.

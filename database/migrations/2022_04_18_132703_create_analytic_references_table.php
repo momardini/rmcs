@@ -18,7 +18,7 @@ return new class extends Migration
         Schema::create('analytic_references', function (Blueprint $table) {
             $table->id();
             $table->foreignId('analytic_id')->constrained()->cascadeOnUpdate()->cascadeOnDelete();
-            $table->integer('gender')->default(GenderType::NOT_DEFINED);
+            $table->integer('gender')->default(GenderType::MALE);
             $table->integer('female_status')->default(FemaleStatus::NOT_DEFINED);
             $table->double('min')->nullable();
             $table->double('max')->nullable();

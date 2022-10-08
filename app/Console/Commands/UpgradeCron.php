@@ -44,7 +44,7 @@ class UpgradeCron extends Command
     public function handle(): int
     {
 
-        return 0;
+
         $perpage = 10000;
         DB::connection('mysql2')->statement('UPDATE `appointments` set patient_id = 228 WHERE `patient_id` = 227');
         DB::connection('mysql2')->statement('UPDATE `appointments` set patient_id = 2025 WHERE `patient_id` = 2024');
@@ -52,47 +52,47 @@ class UpgradeCron extends Command
         DB::connection('mysql2')->statement('UPDATE `appointments` set patient_id = 4599 WHERE `patient_id` = 4598');
         DB::connection('mysql2')->statement('UPDATE `signs` set appointment_id = 12695 WHERE `appointment_id` = 12694');
         DB::connection('mysql2')->statement('UPDATE `signs` set appointment_id = 16442 WHERE `appointment_id` = 16441');
-        $old_models = Sign::on('mysql2')->with('appointment')->get();
-        foreach ($old_models as $old_row) {
-            DB::table('signs')
-                ->where('id', $old_row->id)
-                ->update(['patient_id' => $old_row->appointment->patient_id]);
-        }
+        DB::connection('mysql2')->statement('UPDATE `users` set station_id = 1 WHERE `station_id` IS NULL');
+        // $old_models = Sign::on('mysql2')->with('appointment')->get();
+        // foreach ($old_models as $old_row) {
+        //     DB::table('signs')
+        //         ->where('id', $old_row->id)
+        //         ->update(['patient_id' => $old_row->appointment->patient_id]);
+        // }
 
         // Role
-        $role_count = Role::all()->count();
-        if ($role_count < 11) {
-            $old_models = Role::on('mysql2')->where('id', '>=', 3)->get();
-            foreach ($old_models as $old_row) {
-                $new_record = new Role();
-                $new_record = $old_row->replicate();
-                $new_record->save();
-            }
+        $newStep = Role::orderByDesc('id')->first();
+        $step = isset($newStep)?$newStep->id:0;
+        $old_models = Role::on('mysql2')->where('id', '>', $step)->get();
+        foreach ($old_models as $old_row) {
+            $new_record = new Role();
+            $new_record = $old_row->replicate();
+            $new_record->save();
         }
         //        Station
-        $station_count = Station::all()->count();
-        if ($station_count < 8) {
-            $old_models = Station::on('mysql2')->where('id', '>=', 1)->get();
-            foreach ($old_models as $old_row) {
-                $new_record = new Station(
-                    [
-                        'id' => $old_row->id,
-                        'title' => $old_row->title,
-                        'address' => $old_row->location,
-                        'mobile' => $old_row->mobile,
-                        'logo' => $old_row->logo,
-                        'active' => $old_row->active,
-                    ]
-                );
-                $new_record->save();
-            }
+        $newStep = Station::orderByDesc('id')->first();
+        $step = isset($newStep)?$newStep->id:0;
+        $old_models = Station::on('mysql2')->where('id', '>', $step)->get();
+        foreach ($old_models as $old_row) {
+            $new_record = new Station(
+                [
+                    'id' => $old_row->id,
+                    'title' => $old_row->title,
+                    'address' => $old_row->location,
+                    'mobile' => $old_row->mobile,
+                    'logo' => $old_row->logo,
+                    'active' => $old_row->active,
+                ]
+            );
+            $new_record->save();
         }
+        // return 0;
         // User
-        $user_count = User::all()->count();
-        if ($user_count < 52) {
-            $old_models = User::on('mysql2')->where('id', '>=', 2)->get();
-            foreach ($old_models as $old_row) {
-                $new_record = new User([
+        $newStep = User::orderByDesc('id')->first();
+        $step = isset($newStep)?$newStep->id:0;
+        $old_models = User::on('mysql2')->where('id', '>', $step)->get();
+        foreach ($old_models as $old_row) {
+            $new_record = new User([
                     'id' => $old_row->id,
                     'role_id' => $old_row->role_id,
                     'name' => $old_row->name,
@@ -107,15 +107,16 @@ class UpgradeCron extends Command
                     'updated_at' => $old_row->updated_at	,
                     'active' => $old_row->active,
                 ]
-                );
-                $new_record->save();
-            }
-            return 0;
+            );
+            $new_record->save();
         }
+//         return 0;
 
 //        Clinic
-        $step = Upgrade::where('model','Clinic')->first();
-        $old_models = Clinic::on('mysql2')->where('id', '>=', $step->row_id)->paginate($perpage);
+        // $step = Upgrade::where('model','Clinic')->first();
+        $newStep = Clinic::orderByDesc('id')->first();
+        $step = isset($newStep)?$newStep->id:0;
+        $old_models = Clinic::on('mysql2')->where('id', '>', $step)->get();
         foreach ($old_models as $old_row) {
             $new_record = new Clinic(
                 [
@@ -125,14 +126,16 @@ class UpgradeCron extends Command
                 ]
             );
             $new_record->save();
-            $step->increment('row_id');
         }
+
+
         // return 0;
         // Patient
 
-        $step = Upgrade::where('model','Patient')->first();
+        $newStep = Patient::orderByDesc('id')->first();
+        $step = isset($newStep)?$newStep->id:0;
         /** @var Patient */
-        $old_models = Patient::on('mysql2')->where('id', '>', $step->row_id)->paginate($perpage);
+        $old_models = Patient::on('mysql2')->where('id', '>', $step)->paginate($perpage);
         foreach ($old_models as $old_row) {
             $new_record = new Patient(
                 [
@@ -140,7 +143,7 @@ class UpgradeCron extends Command
                     'full_name' => $old_row->full_name,
                     'station_id' => $old_row->station_id,
                     'birth' => $old_row->birth,
-                    'status' => $old_row->status,
+                    'status' => 1,
                     'city' => $old_row->city,
                     'address' => $old_row->address,
                     'gender' => $old_row->sex,
@@ -161,19 +164,19 @@ class UpgradeCron extends Command
                 ]
             );
             $new_record->save();
-            $step->increment('row_id');
-
         }
+//        return 0;
         DB::connection('mysql2')->statement('UPDATE `patients` SET `marital`=IF(children >0 ,2,1)');
-        $last = ($old_models->last())?$old_models->last()->id:50000;
-        $step->update(['row_id'=> $last]);
-        $step->save();
+//        $last = ($old_models->last())?$old_models->last()->id:50000;
+//        $step->update(['row_id'=> $last]);
+//        $step->save();
 
 
         // employee
-        $step = Upgrade::where('model','Employee')->first();
+        $newStep = Employee::orderByDesc('id')->first();
+        $step = isset($newStep)?$newStep->id:0;
         /** @var Employee */
-        $old_models = Employee::on('mysql2')->where('id', '>', $step->row_id)->paginate($perpage);
+        $old_models = Employee::on('mysql2')->where('id', '>', $step)->paginate($perpage);
         foreach ($old_models as $old_row) {
             $new_record = new Employee(
                 [
@@ -194,14 +197,15 @@ class UpgradeCron extends Command
             );
             $new_record->save();
         }
-        $last = ($old_models->last())?$old_models->last()->id:50000;
-        $step->update(['row_id'=> $last]);
-        $step->save();
-
+//        $last = ($old_models->last())?$old_models->last()->id:50000;
+//        $step->update(['row_id'=> $last]);
+//        $step->save();
+//        return 0;
         // meet
-        $step = Upgrade::where('model','Meet')->first();
+        $newStep = Meet::orderByDesc('id')->first();
+        $step = isset($newStep)?$newStep->id:0;
         /** @var Employee */
-        $old_models = Employee::on('mysql2')->where('id', '>', $step->row_id)->paginate($perpage);
+        $old_models = Employee::on('mysql2')->where('id', '>', $step)->paginate($perpage);
         foreach ($old_models as $old_row) {
             $new_record = new Meet(
                 [
@@ -213,14 +217,15 @@ class UpgradeCron extends Command
             );
             $new_record->save();
         }
-        $last = ($old_models->last())?$old_models->last()->id:50000;
-        $step->update(['row_id'=> $last]);
-        $step->save();
-
+//        $last = ($old_models->last())?$old_models->last()->id:50000;
+//        $step->update(['row_id'=> $last]);
+//        $step->save();
+//        return 0;
         // Calender
-        $step = Upgrade::where('model','Calendar')->first();
+        $newStep = Calendar::orderByDesc('id')->first();
+        $step = isset($newStep)?$newStep->id:0;
         /** @var Collection */
-        $old_models = DB::connection('mysql2')->table('events')->where('id', '>', $step->row_id)->paginate($perpage);
+        $old_models = DB::connection('mysql2')->table('events')->where('id', '>', $step)->paginate($perpage);
         foreach ($old_models as $old_row) {
             $new_record = new Calendar(
                 [
@@ -232,18 +237,17 @@ class UpgradeCron extends Command
             );
             $new_record->save();
         }
-        $last = ($old_models->last())?$old_models->last()->id:50000;
-        $step->update(['row_id'=> $last]);
-        $step->save();
+//        return 0;
 
         // Appointment
         DB::connection('mysql2')->statement('UPDATE `appointments` set patient_id = 228 WHERE `patient_id` = 227');
         DB::connection('mysql2')->statement('UPDATE `appointments` set patient_id = 2025 WHERE `patient_id` = 2024');
         DB::connection('mysql2')->statement('UPDATE `appointments` set patient_id = 2414 WHERE `patient_id` = 2413');
         DB::connection('mysql2')->statement('UPDATE `appointments` set patient_id = 4599 WHERE `patient_id` = 4598');
-        $step = Upgrade::where('model','Appointment')->first();
+        $newStep = Appointment::orderByDesc('id')->first();
+        $step = isset($newStep)?$newStep->id:0;
         /** @var Collection */
-        $old_models = Appointment::on('mysql2')->where('id', '>', $step->row_id)->paginate($perpage);
+        $old_models = Appointment::on('mysql2')->where('id', '>', $step)->paginate($perpage);
         foreach ($old_models as $old_row) {
             $new_record = new Appointment(
                 [
@@ -261,16 +265,13 @@ class UpgradeCron extends Command
                 ]
             );
             $new_record->save();
-            $step->increment('row_id');
         }
-        $last = ($old_models->last())?$old_models->last()->id:50000;
-        $step->update(['row_id'=> $last]);
-        $step->save();
-        // return 0;
+
+//        return 0;
         // Interview
-        $step = Upgrade::where('model','Interview')->first();
-        /** @var Collection */
-        $old_models = Interview::on('mysql2')->where('id', '>', $step->row_id)->paginate($perpage);
+        $newStep = Interview::orderByDesc('id')->first();
+        $step = isset($newStep)?$newStep->id:0;
+        $old_models = Interview::on('mysql2')->where('id', '>', $step)->paginate($perpage);
         foreach ($old_models as $old_row) {
             $new_record = new Interview(
                 [
@@ -287,37 +288,34 @@ class UpgradeCron extends Command
                 ]
             );
             $new_record->save();
-            $step->increment('row_id');
-
         }
-        $last = ($old_models->last())?$old_models->last()->id:50000;
-        $step->update(['row_id'=> $last]);
-        $step->save();
-        // return 0;
+//
+//         return 0;
 
         // Sign
-        $step = Upgrade::where('model','Sign')->first();
+
         DB::connection('mysql2')->statement('UPDATE `signs` set appointment_id = 12695 WHERE `appointment_id` = 12694');
         DB::connection('mysql2')->statement('UPDATE `signs` set appointment_id = 16442 WHERE `appointment_id` = 16441');
-        /** @var Collection */
-        $old_models = Sign::on('mysql2')->with('appointment')->where('id', '>', $step->row_id)->paginate($perpage);
+        $newStep = Sign::orderByDesc('id')->first();
+        $step = isset($newStep)?$newStep->id:0;
+        $old_models = Sign::on('mysql2')->with('appointment')->where('id', '>', $step)->paginate($perpage);
         foreach ($old_models as $old_row) {
             $new_record = new Sign(
                 [
                     'id' => $old_row->id,
-                    'appointment_id' => $old_row->appointment_id,
+//                    'appointment_id' => $old_row->appointment_id,
                     'nurse_id' => $old_row->nurse_id,
-                    'systolic_blood_pressure' => abs($old_row->systolic_blood_pressure),
-                    'diastolic_blood_pressure' => abs($old_row->diastolic_blood_pressure),
-                    'heartbeat' => abs($old_row->heartbeat),
-                    'temperature' => abs($old_row->temperature),
-                    'weight' => abs($old_row->Weight),
-                    'length' => abs($old_row->Length),
+                    'systolic_blood_pressure' => abs((double) Sign::arTOen($old_row->systolic_blood_pressure)),
+                    'diastolic_blood_pressure' => abs((double) Sign::arTOen($old_row->diastolic_blood_pressure)),
+                    'heartbeat' => abs((double) Sign::arTOen($old_row->heartbeat)),
+                    'temperature' => abs((double) Sign::arTOen($old_row->temperature)),
+                    'weight' => abs((double) Sign::arTOen($old_row->Weight)),
+                    'length' => abs((double) Sign::arTOen($old_row->Length)),
                     'waistline' => $old_row->waistline,
                     'breathing' => $old_row->Breathing,
-                    'oxygen' => abs($old_row->oxygen),
+                    'oxygen' => abs((double) Sign::arTOen($old_row->oxygen)),
                     'peak_expiratory_flow' => $old_row->pef,
-                    'sugar' => $old_row->sugar,
+                    'sugar' => abs((double) Sign::arTOen($old_row->sugar)),
                     'female_status' => $old_row->pregnant,
                     'skins' => $old_row->skins,
                     'ecg' => $old_row->ecg,
@@ -329,19 +327,14 @@ class UpgradeCron extends Command
                 ]
             );
             $new_record->save();
-            $step->increment('row_id');
-
         }
-        $last = ($old_models->last())?$old_models->last()->id:50000;
-        $step->update(['row_id'=> $last]);
-        $step->save();
-        // return 0;
+//         return 0;
         // Recipe
         DB::connection('mysql2')->statement('UPDATE `recipes` set interview_id = 18593 WHERE `interview_id` = 18592');
 
-        $step = Upgrade::where('model','Recipe')->first();
-        /** @var Collection */
-        $old_models = Recipe::on('mysql2')->where('id', '>', $step->row_id)->paginate($perpage);
+        $newStep = Recipe::orderByDesc('id')->first();
+        $step = isset($newStep)?$newStep->id:0;
+        $old_models = Recipe::on('mysql2')->where('id', '>', $step)->paginate($perpage);
         foreach ($old_models as $old_row) {
             $new_record = new Recipe(
                 [
@@ -350,7 +343,7 @@ class UpgradeCron extends Command
                     'medicine_title' => $old_row->medicine_title,
                     'repeats' => $old_row->repeats,
                     'pharmaceutical_form' => $old_row->how_use,
-                    'count' => ($old_row->count)?$old_row->count:1,
+                    'count' => ($old_row->count)?:1,
                     'note' => $old_row->note,
                     'consume' => $old_row->dispensed,
                     'created_at' => $old_row->created_at,
@@ -358,18 +351,13 @@ class UpgradeCron extends Command
                 ]
             );
             $new_record->save();
-            $step->update(['row_id'=>  $old_row->id]);
-            $step->save();
 
         }
-        $last = ($old_models->last())?$old_models->last()->id:50000;
-        $step->update(['row_id'=> $last]);
-        $step->save();
-        // return 0;
+//         return 0;
         // Analytic
-        $step = Upgrade::where('model','Analytic')->first();
-        /** @var Collection */
-        $old_models = Analytic::on('mysql2')->where('id', '>', $step->row_id)->paginate($perpage);
+        $newStep = Analytic::orderByDesc('id')->first();
+        $step = isset($newStep)?$newStep->id:0;
+        $old_models = Analytic::on('mysql2')->where('id', '>', $step)->paginate($perpage);
         foreach ($old_models as $old_row) {
             $new_record = new Analytic(
                 [
@@ -382,31 +370,25 @@ class UpgradeCron extends Command
                 ]
             );
             $new_record->save();
-            $step->update(['row_id'=>  $old_row->id]);
-            $step->save();
-
         }
-        $last = ($old_models->last())?$old_models->last()->id:50000;
-        $step->update(['row_id'=> $last]);
-        $step->save();
-        // return 0;
+//         return 0;
+
         // Analytic_Interview
-        $step = Upgrade::where('model','Analytic')->first();
-        /** @var Collection */
-        $old_models = Interview::on('mysql2')->where('id', '>', $step->row_id)->with('analytics')->paginate($perpage);
-        foreach ($old_models as $old_row) {
-            $new_record = Interview::find($old_row->id);
-            foreach ($old_row->analytics as $analytic) {
-                $new_record->analytics()->attach($analytic->id, ['result' => $analytic->pivot->result]);
+        $query = Interview::on('mysql2')->orderBy('id');
+        $paginator = $query->cursorPaginate(2000, ['*'], 'myCursorId');
+
+        while ($paginator->hasPages()) {
+            foreach ($paginator->items() as $item) {
+                $new_record = Interview::find($item->id);
+                foreach ($item->analytics as $analytic) {
+                    $new_record->analytics()->attach($analytic->id, ['result' => $analytic->pivot->result]);
+                }
             }
 
-            $step->increment('row_id');
-
+            $next = $paginator->nextCursor();
+            $paginator = $query->cursorPaginate(2000, ['*'], 'myCursorId', $next);
         }
-        $last = ($old_models->last())?$old_models->last()->id:50000;
-        $step->update(['row_id'=> $last]);
-        $step->save();
-        // return 0;
+         return 0;
 
 
     }
