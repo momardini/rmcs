@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Str;
 
 /**
  * App\Models\Patient
@@ -74,6 +75,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 class Patient extends Model
 {
     use HasFactory,\Staudenmeir\EloquentHasManyDeep\HasRelationships;
+
     protected $guarded = [];
     protected $casts = [
         'status' => PatientStatus::class,
@@ -86,6 +88,7 @@ class Patient extends Model
         'family_diseases' => 'array',
         'birth' => 'date',
     ];
+    public $additional_attributes = ['age'];
     public function getStatusColorAttribute(): string
     {
         return [
@@ -132,7 +135,10 @@ class Patient extends Model
 
     public function getHideNameAttribute()
     {
-        return \Str::of($this->full_name)->explode(' ')->map(function ($str) {return \Str::mask($str, '*', 3);})->implode(' ');
+        $firstName = Str::of($this->full_name)->explode(' ')->first();
+        $lastName = implode(' ',Str::of($this->full_name)->explode(' ')->slice(1)->toArray());
+        return "<span>{$firstName} </span><span class='blur'>{$lastName}</span>";
+//        return $firstName.' '. $lastName->map(function ($str) {return \Str::mask($str, '*', 3);})->implode(' ');
     }
     /**
      * Get the station that owns the Patient

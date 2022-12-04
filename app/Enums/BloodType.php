@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
 /**
@@ -15,7 +16,7 @@ use BenSampo\Enum\Enum;
  * @method static static  O_NEGATIVE()
  * @method static static  NOT_DEFINED()
  */
-final class BloodType extends Enum
+final class BloodType extends Enum implements LocalizedEnum
 {
     const A_POSITIVE =   1;
     const B_POSITIVE =   2;

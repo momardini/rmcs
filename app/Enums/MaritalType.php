@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
 /**
@@ -9,7 +10,7 @@ use BenSampo\Enum\Enum;
  * @method static static MARRIED()
  * @method static static DIVORCED()
  */
-final class MaritalType extends Enum
+final class MaritalType extends Enum implements LocalizedEnum
 {
     const SINGLE =   1;
     const MARRIED =   2;

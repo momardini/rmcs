@@ -130,6 +130,15 @@ class User extends \TCG\Voyager\Models\User
     {
         return $this->belongsTo(Station::class);
     }
+    /**
+     * Get all the devices for the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function devices()
+    {
+        return $this->hasMany(Device::class);
+    }
     public function getActions($model){
         $permissions = [];
         foreach ($this->role->permissions->where('table_name',$model) as $permission){

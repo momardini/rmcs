@@ -6,21 +6,29 @@
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
                     <a href="{{ route('dashboard') }}">
-                        <x-jet-application-mark class="block h-9 w-auto" />
+{{--                        <x-jet-application-mark class="block h-9 w-auto" />--}}
+                        <img src="{{ Voyager::image(Voyager::setting('site.logo', '')) }}" alt="Logo Icon" class="block h-9 w-auto">
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
-                    </x-jet-nav-link>
-                </div>
-                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-                    <x-jet-nav-link href="{{ route('portal.patients.index') }}" :active="request()->routeIs('portal.patients.index')">
-                        {{ __('Patients') }}
-                    </x-jet-nav-link>
-                </div>
+                @foreach($items as $item)
+                    <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                        <x-jet-nav-link href="{{ route($item->route) }}" :active="request()->routeIs($item->route)">
+                            {{$item->getTranslatedAttribute('title')}}
+                        </x-jet-nav-link>
+                    </div>
+                @endforeach
+{{--                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">--}}
+{{--                    <x-jet-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">--}}
+{{--                        {{ __('portal.patient.dashboard') }}--}}
+{{--                    </x-jet-nav-link>--}}
+{{--                </div>--}}
+{{--                <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">--}}
+{{--                    <x-jet-nav-link href="{{ route('portal.patients.index') }}" :active="request()->routeIs('portal.patients.index')">--}}
+{{--                        patients--}}
+{{--                    </x-jet-nav-link>--}}
+{{--                </div>--}}
             </div>
 
             <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -144,6 +152,9 @@
         <div class="pt-2 pb-3 space-y-1">
             <x-jet-responsive-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
+            </x-jet-responsive-nav-link>
+            <x-jet-responsive-nav-link href="{{ route('portal.patients.index') }}" :active="request()->routeIs('portal.patients.index')">
+                {{ __('Patients') }}
             </x-jet-responsive-nav-link>
         </div>
 

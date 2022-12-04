@@ -2,17 +2,12 @@
 
 namespace App\Http\Controllers\Portal;
 
+use App\Models\Device;
 use App\Models\Patient;
-use Exception;
+use Auth;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use TCG\Voyager\Events\BreadDataAdded;
-use TCG\Voyager\Events\BreadDataDeleted;
-use TCG\Voyager\Events\BreadDataRestored;
-use TCG\Voyager\Events\BreadDataUpdated;
-use TCG\Voyager\Events\BreadImagesDeleted;
 use TCG\Voyager\Facades\Voyager;
 use TCG\Voyager\Http\Controllers\Traits\BreadRelationshipParser;
 
@@ -54,6 +49,32 @@ class PatientController extends \TCG\Voyager\Http\Controllers\Controller
                 }
             }
         }
+
+        //if (Auth::user()->role_id == 3) { // reception
+//            $input = $request->userAgent();
+//            $start_pos = strpos($input, '(')+1;
+//            $length =  strpos($input, ')', $start_pos) - ($start_pos);
+//            $device_type = substr($input, $start_pos, $length);
+//            $b_string = explode(' ',$input)[12];
+//            $browser = substr($b_string,0,strpos($b_string,'/'));
+//            $device = new Device([
+//                'browser' => $browser,
+//                'device_type' => $device_type,
+//                'user_id' => Auth::user()->id
+//            ]);
+//            $oldDevice = Device::where('user_id',Auth::user()->id)->first();
+//            if ($oldDevice){
+//                if (!($oldDevice->browser == $browser && $oldDevice->device_type == $device_type)){
+//                    $notify_message = ['notify' => 'error', 'title' => 'another login device'];
+//                    Auth::guard('web')->logout();
+//                    return redirect(to: 'login')->with($notify_message);
+//                }
+//            }else{
+//                $device->save();
+//            }
+
+
+        //}
 
         return view('portal.patients.index',compact(
             'actions',

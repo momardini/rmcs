@@ -9,7 +9,7 @@
     <link href="https://unpkg.com/filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css" rel="stylesheet">
 @endpush
 @section('content')
-    <livewire:patients.sign-add-edit :is_edit="$is_edit" :sign="$dataTypeContent" :patient="$patient" />
+    <livewire:patients.sign-add-edit :is_edit="$is_edit" :sign="$dataTypeContent" :patient="$patient" :dataType="$dataType"/>
 @stop
 
 
@@ -18,4 +18,5 @@
     <script src="https://unpkg.com/filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type.js"></script>
 
     <script src="https://unpkg.com/filepond/dist/filepond.js"></script>
+
 @endpush

@@ -2,6 +2,7 @@
 
 namespace App\Enums;
 
+use BenSampo\Enum\Contracts\LocalizedEnum;
 use BenSampo\Enum\Enum;
 
 /**
@@ -20,7 +21,7 @@ use BenSampo\Enum\Enum;
  * @method static static QONAITRA()
  * @method static static  DAMASCUS()
  */
-final class City extends Enum
+final class City extends Enum implements LocalizedEnum
 {
     const IDLIB =   1;
     const HASAKA =   2;

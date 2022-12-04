@@ -1,6 +1,6 @@
 <div class="py-1 bg-gradient-to-br from-green-50 to-cyan-100">
-        <div class="flex items-center justify-between md:w-full px-2 text-center py-1">
-            <div class="flex-shrink min-w-0">
+        <div class="container mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-1">
                 <p class="text-xs text-gray-500 truncate dark:text-gray-400">
                     {{$patientDataRows->where('field','id')->first()->getTranslatedAttribute('display_name')}}
                 </p>
@@ -8,7 +8,7 @@
                     {{$patient->id}}
                 </p>
             </div>
-            <div class="flex-shrink min-w-0">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-1">
                 <p class="text-xs text-gray-500 truncate dark:text-gray-400">
                     {{$patientDataRows->where('field','full_name')->first()->getTranslatedAttribute('display_name')}}
                 </p>
@@ -16,7 +16,7 @@
                     {{$patient->full_name}}
                 </p>
             </div>
-            <div class="flex-shrink min-w-0">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-1">
                 <p class="text-xs text-gray-500 truncate dark:text-gray-400">
                     {{$patientDataRows->where('field','gender')->first()->getTranslatedAttribute('display_name')}}
                 </p>
@@ -24,7 +24,7 @@
                     {{$patient->gender->description}}
                 </p>
             </div>
-            <div class="flex-shrink min-w-0">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-1">
                 <p class="text-xs text-gray-500 truncate dark:text-gray-400">
                     {{ __('portal.patient.age') }}
                 </p>
@@ -32,7 +32,7 @@
                     {{$patient->age}}
                 </p>
             </div>
-            <div class="flex-shrink min-w-0">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-1">
                 <p class="text-xs text-gray-500 truncate dark:text-gray-400">
                     {{$patientDataRows->where('field','marital')->first()->getTranslatedAttribute('display_name')}}
                 </p>
@@ -40,7 +40,7 @@
                     {{$patient->marital->description}}
                 </p>
             </div>
-            <div class="flex-shrink min-w-0">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-1">
                 <p class="text-xs text-gray-500 truncate dark:text-gray-400">
                     {{$patientDataRows->where('field','children')->first()->getTranslatedAttribute('display_name')}}
                 </p>
@@ -48,7 +48,7 @@
                     {{$patient->children}}
                 </p>
             </div>
-            <div class="flex-shrink min-w-0">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-1">
                 <p class="text-xs text-gray-500 truncate dark:text-gray-400">
                     {{$patientDataRows->where('field','work')->first()->getTranslatedAttribute('display_name')}}
                 </p>
@@ -56,7 +56,7 @@
                     {{$patient->work}}
                 </p>
             </div>
-            <div class="flex-shrink min-w-0">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-1">
                 <p class="text-xs text-gray-500 truncate dark:text-gray-400">
                     {{$patientDataRows->where('field','allergies')->first()->getTranslatedAttribute('display_name')}}
                 </p>
@@ -64,17 +64,17 @@
                     {{$patient->allergies}}
                 </p>
             </div>
-            <div class="flex-shrink min-w-0">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-1">
                 <p class="text-xs text-gray-500 truncate dark:text-gray-400">
                     {{$patientDataRows->where('field','previous_diseases')->first()->getTranslatedAttribute('display_name')}}
                 </p>
                 <p class="text-xs font-medium text-gray-900 truncate dark:text-white">
-                    @foreach($patient->previous_diseases as $previous_disease)
+                    @foreach((array)$patient->previous_disease as $previous_disease)
                         <span>{{ \App\Enums\DiseaseType::fromValue(json_decode($previous_disease))->description }},</span>
                     @endforeach
                 </p>
             </div>
-            <div class="flex-shrink min-w-0">
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-1">
                 <p class="text-xs text-gray-500 truncate dark:text-gray-400">
                     {{$patientDataRows->where('field','previous_surgery')->first()->getTranslatedAttribute('display_name')}}
                 </p>

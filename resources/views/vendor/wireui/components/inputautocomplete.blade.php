@@ -35,7 +35,7 @@
                 @endforeach
             @else
 
-                <span class="block py-1 px-2 text-sm">No results!</span>
+                <span class="block py-1 px-2 text-sm">{{__('portal.patient.no-result-found')}}</span>
             @endif
         </div>
     @endif

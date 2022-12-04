@@ -22,6 +22,9 @@ class ChangeLocale
             $user = Auth::user();
             app()->setLocale($user->locale ?? app()->getLocale());
             Carbon::setLocale(__('voyager::generic.is_rtl') == 'true' ? 'ar_SY' : config('app.locale') );
+        }else{
+            app()->setLocale(app()->getLocale());
+            Carbon::setLocale(config('app.locale') );
         }
         return $next($request);
     }

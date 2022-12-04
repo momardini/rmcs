@@ -4,6 +4,32 @@ use App\Http\Controllers\Portal\PatientController;
 use App\Http\Controllers\Portal\PdfController;
 use App\Http\Livewire\Dashboard;
 use Illuminate\Support\Facades\Route;
+use Laravel\Jetstream\Http\Controllers\CurrentTeamController;
+use Laravel\Jetstream\Http\Controllers\Inertia\ApiTokenController;
+use Laravel\Jetstream\Http\Controllers\Inertia\PrivacyPolicyController;
+use Laravel\Jetstream\Http\Controllers\Inertia\TeamController;
+use Laravel\Jetstream\Http\Controllers\Inertia\TermsOfServiceController;
+use Laravel\Jetstream\Http\Controllers\Inertia\UserProfileController;
+use Laravel\Jetstream\Http\Controllers\TeamInvitationController;
+use Laravel\Jetstream\Jetstream;
+use Laravel\Fortify\Features;
+use Laravel\Fortify\Http\Controllers\AuthenticatedSessionController;
+use Laravel\Fortify\Http\Controllers\ConfirmablePasswordController;
+use Laravel\Fortify\Http\Controllers\ConfirmedPasswordStatusController;
+use Laravel\Fortify\Http\Controllers\ConfirmedTwoFactorAuthenticationController;
+use Laravel\Fortify\Http\Controllers\EmailVerificationNotificationController;
+use Laravel\Fortify\Http\Controllers\EmailVerificationPromptController;
+use Laravel\Fortify\Http\Controllers\NewPasswordController;
+use Laravel\Fortify\Http\Controllers\PasswordController;
+use Laravel\Fortify\Http\Controllers\PasswordResetLinkController;
+use Laravel\Fortify\Http\Controllers\ProfileInformationController;
+use Laravel\Fortify\Http\Controllers\RecoveryCodeController;
+use Laravel\Fortify\Http\Controllers\RegisteredUserController;
+use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticatedSessionController;
+use Laravel\Fortify\Http\Controllers\TwoFactorAuthenticationController;
+use Laravel\Fortify\Http\Controllers\TwoFactorQrCodeController;
+use Laravel\Fortify\Http\Controllers\TwoFactorSecretKeyController;
+use Laravel\Fortify\Http\Controllers\VerifyEmailController;
 
 Route::redirect('/','dashboard');
 
@@ -13,7 +39,7 @@ Route::middleware([
     'verified'
 ])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
-    Route::name('portal.')->middleware('changeLocal')->group(function () {
+    Route::name('portal.')->group(function () {
 //        Route::get('/patients', action: [PatientController::class, 'list'])->name('patients.list');
 //        Route::get('/patients/{id}/edit', action: [PatientController::class, 'list'])->name('patients.list');
         Route::controller(PatientController::class)->group(function () {

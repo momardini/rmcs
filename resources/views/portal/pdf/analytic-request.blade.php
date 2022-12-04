@@ -81,7 +81,7 @@
     <table style="width: 100%;" class="noborderdtable">
         <tbody>
         <tr>
-            <td style="text-align: left;"><img src="{{ "http://shamklinik.com/storage/".$station->logo }}" width="20%" /></td>
+            <td style="text-align: left;"><img src="{{ url('storage/'.$station->logo) }}" width="20%" /></td>
             <td></td>
             <td style="text-align: right;font-family: 'cairoregular';">
                 <h3 style="color: #2e416a;">{{$station->getTranslatedAttribute('title')}}</h3>

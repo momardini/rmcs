@@ -21,20 +21,29 @@ class SignAddEdit extends Component
     public Sign $editing;
     public Patient $patient;
     public $previous;
+    public $dataType;
     public $skins = [];
     public $ecg = [];
     public $docs = [];
+
+    public function getListeners()
+    {
+        return [
+            "UploadingFileProcess" ,
+        ];
+    }
+
     public function rules()
     {
         return [
-            'editing.systolic_blood_pressure' => 'nullable|integer|between:80,200',
-            'editing.diastolic_blood_pressure' => 'nullable|integer|between:40,200',
-            'editing.heartbeat' => 'nullable|integer|between:40,200',
-            'editing.temperature' => 'nullable|integer|between:30,50',
-            'editing.weight' => 'nullable|integer|between:0,300',
-            'editing.length' => 'nullable|integer|between:5,250',
-            'editing.waistline' => 'nullable|integer',
-            'editing.breathing' => 'nullable|integer',
+            'editing.systolic_blood_pressure' => 'nullable|numeric|between:80,200',
+            'editing.diastolic_blood_pressure' => 'nullable|numeric|between:40,200',
+            'editing.heartbeat' => 'nullable|numeric|between:40,200',
+            'editing.temperature' => 'nullable|numeric|between:30,50',
+            'editing.weight' => 'nullable|numeric|between:0,300',
+            'editing.length' => 'nullable|numeric|between:5,250',
+            'editing.waistline' => 'nullable|numeric',
+            'editing.breathing' => 'nullable|numeric',
             'editing.oxygen' => 'nullable',
             'editing.peak_expiratory_flow' => 'nullable',
             'editing.sugar' => 'nullable',
@@ -45,10 +54,10 @@ class SignAddEdit extends Component
             'editing.comment' => 'nullable',
         ];
     }
-    public function mount($is_edit, $sign,$patient)
+    public function mount($is_edit, $sign,$patient,$dataType)
     {
         $this->patient = $patient;
-
+        $this->dataType = $dataType;
         $this->previous = URL::previous();
         if ($is_edit) {
             $this->editing = $sign;
@@ -83,14 +92,13 @@ class SignAddEdit extends Component
     public function save()
     {
         $this->validate();
-        $notify_message = ['notify' => 'success', 'title' => 'Sign Edit Successfully'];
+        $notify_message = ['notify' => 'success', 'title' => __('voyager::generic.'.($this->is_edit ? 'successfully_updated' : 'successfully_added_new'))];
         if (!$this->is_edit) {
             $this->editing->appointment_id = $this->patient->active_appointment->id;
             $this->editing->nurse_id  = Auth::user()->id;
             $this->editing->patient_id = $this->patient->id;
             $this->editing = Sign::updateOrCreate($this->editing->getAttributes());
             $this->editing->appointment()->update(['status' => AppointmentStatus::SIGN_DONE]);
-            $notify_message = ['notify' => 'success', 'title' => 'Sign Created Successfully'];
         }
         if ($this->editing->save()) {
             $ecg_paths = $skins_paths = $docs_paths = [];

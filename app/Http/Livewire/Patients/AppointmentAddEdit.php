@@ -11,35 +11,42 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\URL;
 use App\Models\Appointment;
 use Livewire\Component;
+use TCG\Voyager\Models\DataType;
 
 class AppointmentAddEdit extends Component
 {
 
     public $is_edit;
+    public $dataType;
     public Appointment $editing;
     public Patient $patient;
     public $previous;
+    public $saving = false;
     public $clinics;
     public $doctors;
     protected $listeners = [
         'queryToParent'
     ];
+    public $appointmentDataRows;
+
     public function rules()
     {
         return [
             'editing.doctor_id' => 'required|exists:users,id',
             'editing.clinic_id' => 'required|exists:clinics,id',
-            'editing.login_time' => 'nullable',
+//            'editing.login_time' => 'nullable',
             'editing.complaint' => 'required',
         ];
     }
 
-    public function mount($is_edit, $appointment,$patient)
+    public function mount($is_edit, $appointment,$patient,$dataType)
     {
         $this->patient = $patient;
         $this->clinics = Clinic::all();
         $this->doctors = User::todayActiveDoctor()->get();
         $this->previous = URL::previous();
+        $this->dataType = $dataType;
+        $this->appointmentDataRows = $dataType->readRows;
         if ($is_edit) {
             $this->editing = $appointment;
         } else {
@@ -60,7 +67,7 @@ class AppointmentAddEdit extends Component
         return Appointment::make([
             'doctor_id' => 0,
             'clinic_id' => 0,
-            'login_time' => Carbon::now()->format('g:i'),
+//            'login_time' => Carbon::now()->format('g:i'),
             'complaint' => '',
         ]);
     }
@@ -72,8 +79,10 @@ class AppointmentAddEdit extends Component
 
     public function save()
     {
+
         $this->validate();
-        $notify_message = ['notify' => 'success', 'title' => 'Appointment Edit Successfully'];
+        $this->saving = true;
+        $notify_message = ['notify' => 'success', 'title' => __('voyager::generic.'.($this->is_edit ? 'successfully_updated' : 'successfully_added_new'))];
         if (!$this->is_edit) {
             $this->editing->patient_id = $this->patient->id;
             $this->editing->status = AppointmentStatus::NEW_APPOINTMENT;
@@ -81,11 +90,11 @@ class AppointmentAddEdit extends Component
             $this->editing->reception_id  = Auth::user()->id;
             $this->editing = Appointment::updateOrCreate($this->editing->getAttributes());
             $this->editing->patient()->update(['status' => PatientStatus::IN_APPOINTMENT]);
-            $notify_message = ['notify' => 'success', 'title' => 'Appointment Created Successfully'];
         }
+        $this->saving = false;
         if ($this->editing->save()) {
             $this->editing = $this->makeBlankAppointment();
-            return redirect($this->previous)->with($notify_message);
+            return redirect()->route('portal.patients.index')->with($notify_message);
         } else {
             return redirect($this->previous)->with(['notify' => 'error', 'title' => 'Error in Appointment Editing']);
         }

@@ -18,6 +18,7 @@
         "niklasravnsborg/laravel-pdf": "^4.1",
         "psr/log": "v2.*",
         "pusher/pusher-php-server": "^7.0",
+        "spatie/laravel-google-calendar": "^3.5",
         "staudenmeir/eloquent-has-many-deep": "^1.7",
         "tcg/voyager": "^1.5",
         "wireui/wireui": "^1.5"

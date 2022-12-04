@@ -15,6 +15,7 @@ class PatientAddEdit extends Component
     public $is_edit;
     public Patient $editing;
     public $previous;
+    public $dataType;
     public function rules() { return [
         'editing.full_name' => 'required|min:3',
         'editing.gender' => 'required|'.new EnumValue(GenderType::class),
@@ -27,14 +28,16 @@ class PatientAddEdit extends Component
         'editing.blood_group' => 'nullable',
         'editing.phone' => 'nullable',
         'editing.birth_place' => 'nullable',
+        'editing.disabilities' => 'nullable',
         'editing.previous_diseases' =>  'nullable',
         'editing.family_diseases' => 'nullable',
         'editing.allergies' => 'nullable',
         'editing.previous_surgery' => 'nullable',
         'editing.previous_accidents' => 'nullable',
     ]; }
-    public function mount($is_edit,$patient) {
+    public function mount($is_edit,$patient,$dataType) {
         $this->previous = URL::previous();
+        $this->dataType = $dataType;
         if($is_edit){$this->editing = $patient; }
         else{$this->editing = $this->makeBlankPatient();}
     }
@@ -68,6 +71,9 @@ class PatientAddEdit extends Component
             $this->editing->station_id = Auth::user()->station_id;
             $this->editing = Patient::updateOrCreate($this->editing->getAttributes());
             $notify_message = ['notify'=>'success','title'=>'Patient Created Successfully'];
+        }
+        if ($this->editing->marital->is(MaritalType::SINGLE) && $this->editing->children){
+            $this->editing->marital = MaritalType::MARRIED;
         }
         if ($this->editing->save()){
             $this->editing = $this->makeBlankPatient();

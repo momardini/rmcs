@@ -1,5 +1,5 @@
 <div>
-    <x-button icon="download" color="gray" label="Import" wire:click="$toggle('showModal')" />
+    <x-button icon="download" color="gray" label="{{ __('portal.patient.import') }}" wire:click="$toggle('showModal')" />
     <form wire:submit.prevent="import">
         <x-modal.dialog wire:model="showModal">
             <x-slot name="title">Import Transactions</x-slot>

@@ -34,5 +34,19 @@ return [
         'clinic' => 'العيادة',
         'patient-number' => 'رقم',
         'patient-name' => 'اسم',
+        'analytic' => 'النتيجة',
+        'normal-unit' => 'القيم الطبيعية / وحدة',
+        'request-for-procedure' => 'طلب إجراء أو تحقيق',
+        'action-required' => 'الإجراء مطلوب',
+        'advanced-search' => 'البحث المتقدم',
+        'no-patient-found' => 'لم يتم العثور على نتيجة ...',
+        'drag-drop' => 'اضف الملف أو تصفح',
+        'unregister-device-title' => 'تسجيل الدخول من جهاز جديد غير مسجل',
+        'forget-password' => 'نسيت كلمة المرور؟',
+        'unregister-description' => 'لتسجيل الجهاز (info@shamclinic.com) تقوم بتسجيل الدخول الى البرنامج من خلال جهاز غير مسجل يرجى التواصل مع ادارة البرنامج على البريد الالكتروني',
+        'export' => 'تصدير',
+        'import' => 'استيراد',
+        'search-patients' => 'البحث عن المريض',
+
     ]
     ];

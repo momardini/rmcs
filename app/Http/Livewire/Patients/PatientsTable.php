@@ -14,11 +14,13 @@ use App\Http\Livewire\DataTable\WithSorting;
 use App\Http\Livewire\DataTable\WithCachedRows;
 use App\Http\Livewire\DataTable\WithBulkActions;
 use App\Http\Livewire\DataTable\WithPerPagePagination;
+use TCG\Voyager\Models\DataType;
 
 class PatientsTable extends Component
 {
     use WithPerPagePagination, WithSorting, WithBulkActions, WithCachedRows;
     public $showDeleteModal = false;
+    public $patientDataRows;
     public $s = '';
     public $filters = [
         'search' => '',
@@ -62,6 +64,7 @@ class PatientsTable extends Component
 
     public function mount()
     {
+        $this->patientDataRows = DataType::where('slug', '=', 'patients')->first()->readRows;
     }
 
     public function updatedFilters()

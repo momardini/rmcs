@@ -136,7 +136,7 @@ class InterviewAddEdit extends Component
     public function save()
     {
         $this->validate();
-        $notify_message = ['notify' => 'success', 'title' => 'Interview Edit Successfully'];
+        $notify_message = ['notify' => 'success', 'title' => __('voyager::generic.'.($this->is_edit ? 'successfully_updated' : 'successfully_added_new'))];
         if (!$this->is_edit) {
             $this->editing->appointment_id = $this->patient->active_appointment->id;
             $this->editing = Interview::updateOrCreate($this->editing->getAttributes());

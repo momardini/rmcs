@@ -1,4 +1,4 @@
-<div class="w-full flex flex-col {{ $shadow }} {{ $rounded }} {{ $color }} {{ $cardClasses }}">
+<div class="w-full flex flex-col {{ $shadow }} {{ $rounded }}  {{ $cardClasses }}">
     @if ($header)
         {{ $header }}
     @elseif ($title || $action)

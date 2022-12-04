@@ -6,6 +6,9 @@
         FilePond.registerPlugin(FilePondPluginFileValidateType);
         pond = FilePond.create($refs.input, {
         allowMultiple: {{ isset($attributes['multiple']) ? 'true' : 'false' }},
+        labelIdle:`
+        <img src='{{url('/storage/resource/upload.png')}}' class='w-8' />
+        `,
             @if(isset($attributes['files']))
                     files: [
                     @foreach($attributes['files'] as $image)
@@ -15,10 +18,12 @@
                     @endforeach
                   ]
                 @endif
+
         });
         pond.setOptions({
             acceptedFileTypes:['image/*','video/quicktime', 'video/mp4','application/pdf'],
             imagePreviewMaxHeight:100,
+
             {{ isset($attributes['capture']) ? "captureMethod:'camera', " : '' }}
             server: {
                 process: (fieldName, file, metadata, load, error, progress, abort, transfer, options) => {
